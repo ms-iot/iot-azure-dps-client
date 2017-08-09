@@ -1,0 +1,4 @@
+[submodule "azure-iot-device-auth"]
+	path = deps/azure-iot-device-auth
+	url = https://github.com/azure/azure-iot-device-auth
+	branch = private_preview_v2
