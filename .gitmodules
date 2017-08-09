@@ -2,3 +2,7 @@
 	path = deps/azure-iot-device-auth
 	url = https://github.com/azure/azure-iot-device-auth
 	branch = private_preview_v2
+[submodule "iot-core-azure-dm-client"]
+	path = deps/iot-core-azure-dm-client
+	url = https://github.com/ms-iot/iot-core-azure-dm-client
+	branch = develop
