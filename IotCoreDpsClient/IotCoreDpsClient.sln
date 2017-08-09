@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IotCoreDpsClient", "IotCoreDrsClient.vcxproj", "{D63AA529-F34F-4CF4-8D68-5093F981AB64}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\deps\iot-core-azure-dm-client\src\DMTpm\DMTpm.vcxitems*{d63aa529-f34f-4cf4-8d68-5093f981ab64}*SharedItemsImports = 4
+		..\deps\iot-core-azure-dm-client\src\SharedUtilities\SharedUtilities.vcxitems*{d63aa529-f34f-4cf4-8d68-5093f981ab64}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|ARM.ActiveCfg = Debug|ARM
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|ARM.Build.0 = Debug|ARM
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|x64.ActiveCfg = Debug|x64
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|x64.Build.0 = Debug|x64
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|x86.ActiveCfg = Debug|Win32
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Debug|x86.Build.0 = Debug|Win32
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|ARM.ActiveCfg = Release|ARM
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|ARM.Build.0 = Release|ARM
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|x64.ActiveCfg = Release|x64
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|x64.Build.0 = Release|x64
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|x86.ActiveCfg = Release|Win32
+		{D63AA529-F34F-4CF4-8D68-5093F981AB64}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
