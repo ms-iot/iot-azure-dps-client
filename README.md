@@ -31,13 +31,9 @@ Be sure you are using Visual Studio 2015 with Visual C++ (this last bit is impor
 ## provision DPS
 Deploy the provisioning tool (tpm_device_provision.exe built in the previous step) to IotCore device.
 
-Get ENDORSEMENT_KEY from TPM on IotCore device using limpet tool:
-
-    limpet -erk
-
 Run provisioning tool (get CONNECTION_STRING from Azure DPS service, DEVICE_NAME is up to you):
 
-    tpm_device_provision.exe -c <CONNECTION_STRING> -d <DEVICE_NAME> -e <ENDORSEMENT_KEY>
+    tpm_device_provision.exe -c <CONNECTION_STRING> -d <DEVICE_NAME>
 
 ## configure registry for IotCoreDpsClient
 Add this information to the registry:
