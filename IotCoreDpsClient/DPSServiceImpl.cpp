@@ -88,7 +88,7 @@ DPS_SECURE_DEVICE_HANDLE dps_sec;
 DEFINE_ENUM_STRINGS(DRS_ERROR, DRS_ERROR_VALUES);
 DEFINE_ENUM_STRINGS(DRS_REGISTRATION_STATUS, DRS_REGISTRATION_STATUS_VALUES);
 
-void ResetDrs(unsigned int slot)
+void ResetDps(unsigned int slot)
 {
 	TRACE(__FUNCTION__);
 
@@ -107,7 +107,7 @@ void ResetDps0()
 	DestroyServiceUrl(0);
 }
 
-static void on_drs_error_callback(DRS_ERROR error_type, void* user_context)
+static void on_dps_error_callback(DRS_ERROR error_type, void* user_context)
 {
 	TRACE(__FUNCTION__);
 
@@ -117,14 +117,14 @@ static void on_drs_error_callback(DRS_ERROR error_type, void* user_context)
 	}
 	else
 	{
-		DPS_CLIENT_SAMPLE_INFO* err_drs_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-		TRACEP("Failure encountered in DRS info: ", ENUM_TO_STRING(DRS_ERROR, error_type));
-		err_drs_info->registration_complete = DPS_FAILURE;
+		DPS_CLIENT_SAMPLE_INFO* err_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
+		TRACEP("Failure encountered in DPS info: ", ENUM_TO_STRING(DRS_ERROR, error_type));
+		err_dps_info->registration_complete = DPS_FAILURE;
 	}
 
 }
 
-static void drs_registation_status(DRS_REGISTRATION_STATUS reg_status, void* user_context)
+static void dps_registation_status(DRS_REGISTRATION_STATUS reg_status, void* user_context)
 {
     if (user_context == NULL)
     {
@@ -132,33 +132,33 @@ static void drs_registation_status(DRS_REGISTRATION_STATUS reg_status, void* use
     }
     else
     {
-        DPS_CLIENT_SAMPLE_INFO* local_drs_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
+        DPS_CLIENT_SAMPLE_INFO* local_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
 
         TRACEP("DPS Status: ", ENUM_TO_STRING(DRS_REGISTRATION_STATUS, reg_status));
         if (reg_status == DRS_REGISTRATION_STATUS_CONNECTED)
         {
             // Slow down the query of the device until after public preview
-            local_drs_info->sleep_time = 600;
+            local_dps_info->sleep_time = 600;
         }
         else if (reg_status == DRS_REGISTRATION_STATUS_REGISTERING)
         {
             // Slow down the query of the device  until after public preview
-            local_drs_info->sleep_time = 900;
+            local_dps_info->sleep_time = 900;
         }
         else if (reg_status == DRS_REGISTRATION_STATUS_ASSIGNING)
         {
             // Slow down the query of the device  until after public preview
-            local_drs_info->sleep_time = 1200;
+            local_dps_info->sleep_time = 1200;
         }
     }
 }
 
-static void iothub_drs_register_device(IOTHUB_DRS_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
+static void iothub_dps_register_device(IOTHUB_DRS_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
 {
 	TRACE(__FUNCTION__);
 
-	DPS_CLIENT_SAMPLE_INFO* reg_drs_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-	if (reg_drs_info != NULL && register_result == IOTHUB_DRS_OK)
+	DPS_CLIENT_SAMPLE_INFO* reg_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
+	if (reg_dps_info != NULL && register_result == IOTHUB_DRS_OK)
 	{
 		std::string fullUri = iothub_uri;
 		fullUri += "/";
@@ -167,8 +167,8 @@ static void iothub_drs_register_device(IOTHUB_DRS_RESULT register_result, const 
 		// Store connection string in TPM:
 		//   limpet <slot> -SUR <uri>/<deviceId>
 		TRACEP("call limpet <slot> -SUR: ", fullUri.c_str());
-		StoreServiceUrl(reg_drs_info->slot, fullUri.c_str());
-		reg_drs_info->registration_complete = DPS_SUCCESS;
+		StoreServiceUrl(reg_dps_info->slot, fullUri.c_str());
+		reg_dps_info->registration_complete = DPS_SUCCESS;
 	}
 }
 
@@ -200,7 +200,7 @@ void DoDpsWork()
     {
 		// If connection string is not present, query 
 		// azure device registration service for it
-		TRACE("No SAS token found in TPM, query DRS");
+		TRACE("No SAS token found in TPM, query DPS");
 
 		// Wait for an internet connection to be
 		// established
@@ -215,35 +215,35 @@ void DoDpsWork()
 		dps_info.registration_complete = DPS_RUNNING;
         dps_info.sleep_time = 10;
 
-		std::wstring wdrs_slot;
-		if (ERROR_SUCCESS != Utils::TryReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"drs_slot", wdrs_slot))
+		std::wstring wdps_slot;
+		if (ERROR_SUCCESS != Utils::TryReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_slot", wdps_slot))
 		{
 			TRACE("tpm slot not found in registry.");
-			wdrs_slot = L"0";
+			wdps_slot = L"0";
 		}
-		TRACEP(L"tpm slot: ", wdrs_slot.c_str());
-		dps_info.slot = _wtoi(wdrs_slot.c_str());
+		TRACEP(L"tpm slot: ", wdps_slot.c_str());
+		dps_info.slot = _wtoi(wdps_slot.c_str());
 
-		std::wstring wdrs_uri =
-			Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"drs_uri");
-		TRACEP(L"uri from registry: ", wdrs_uri.c_str());
+		std::wstring wdps_uri =
+			Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_uri");
+		TRACEP(L"uri from registry: ", wdps_uri.c_str());
 
-        std::string drs_uri = Utils::WideToMultibyte(wdrs_uri.c_str());
-		TRACEP("uri to char: ", drs_uri.data());
+        std::string dps_uri = Utils::WideToMultibyte(wdps_uri.c_str());
+		TRACEP("uri to char: ", dps_uri.data());
 
-        std::wstring wdrs_scope_id =
-            Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"drs_scope");
-        TRACEP(L"scope from registry: ", wdrs_scope_id.c_str());
+        std::wstring wdps_scope_id =
+            Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_scope");
+        TRACEP(L"scope from registry: ", wdps_scope_id.c_str());
 
-        std::string drs_scope_id = Utils::WideToMultibyte(wdrs_scope_id.c_str());
-        TRACEP("scope to char: ", drs_scope_id.data());
+        std::string dps_scope_id = Utils::WideToMultibyte(wdps_scope_id.c_str());
+        TRACEP("scope to char: ", dps_scope_id.data());
 
         if (platform_init() != 0)
 		{
 			TRACE("Failed calling platform_init");
 		}
 
-		ResetDrs(dps_info.slot);
+		ResetDps(dps_info.slot);
 
 		do
 		{
@@ -251,12 +251,12 @@ void DoDpsWork()
 			dps_info.registration_complete = DPS_RUNNING;
 
 			IOTHUB_DRS_LL_HANDLE handle;
-            if ((handle = IoTHub_DRS_LL_Create(drs_uri.data(), drs_scope_id.data(), DPS_PROTOCOL_TYPE_HTTP, on_drs_error_callback, &dps_info)) == NULL)
+            if ((handle = IoTHub_DRS_LL_Create(dps_uri.data(), dps_scope_id.data(), DPS_PROTOCOL_TYPE_HTTP, on_dps_error_callback, &dps_info)) == NULL)
 			{
 				TRACE("failed calling IoTHub_DRS_LL_Create");
 				return;
 			}
-            if (IoTHub_DRS_LL_Register_Device(handle, iothub_drs_register_device, &dps_info, drs_registation_status, &dps_info) != IOTHUB_DRS_OK)
+            if (IoTHub_DRS_LL_Register_Device(handle, iothub_dps_register_device, &dps_info, dps_registation_status, &dps_info) != IOTHUB_DRS_OK)
 			{
 				TRACE("failed calling IoTHub_DRS_LL_Register_Device");
 				return;
