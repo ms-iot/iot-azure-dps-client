@@ -5,4 +5,4 @@
 [submodule "iot-core-azure-dm-client"]
 	path = deps/iot-core-azure-dm-client
 	url = https://github.com/ms-iot/iot-core-azure-dm-client
-	branch = develop
+	branch = master
