@@ -31,6 +31,9 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "azure_hub_modules\secure_device_factory.h"
 #include "azure_c_shared_utility/platform.h"
 
+#include "azure_hub_modules/dps_client.h"
+#include "azure_hub_modules/dps_transport_http_client.h"
+
 
 extern void xlogging_set_log_function(LOGGER_LOG log_function);
 void LoggingForDpsSdk(LOG_CATEGORY log_category, const char* file, const char* func, const int line, unsigned int /*options*/, const char* format, ...)
@@ -84,8 +87,8 @@ typedef struct DPS_CLIENT_SAMPLE_INFO_TAG
 DPS_CLIENT_SAMPLE_INFO dps_info;
 DPS_SECURE_DEVICE_HANDLE dps_sec;
 
-DEFINE_ENUM_STRINGS(DRS_ERROR, DRS_ERROR_VALUES);
-DEFINE_ENUM_STRINGS(DRS_REGISTRATION_STATUS, DRS_REGISTRATION_STATUS_VALUES);
+DEFINE_ENUM_STRINGS(DPS_ERROR, DPS_ERROR_VALUES);
+DEFINE_ENUM_STRINGS(DPS_REGISTRATION_STATUS, DPS_REGISTRATION_STATUS_VALUES);
 
 void ResetDps(unsigned int slot)
 {
@@ -106,7 +109,7 @@ void ResetDps0()
 	DestroyServiceUrl(0);
 }
 
-static void on_dps_error_callback(DRS_ERROR error_type, void* user_context)
+static void on_dps_error_callback(DPS_ERROR error_type, void* user_context)
 {
 	TRACE(__FUNCTION__);
 
@@ -117,13 +120,13 @@ static void on_dps_error_callback(DRS_ERROR error_type, void* user_context)
 	else
 	{
 		DPS_CLIENT_SAMPLE_INFO* err_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-		TRACEP("Failure encountered in DPS info: ", ENUM_TO_STRING(DRS_ERROR, error_type));
+		TRACEP("Failure encountered in DPS info: ", ENUM_TO_STRING(DPS_ERROR, error_type));
 		err_dps_info->registration_complete = DPS_FAILURE;
 	}
 
 }
 
-static void dps_registation_status(DRS_REGISTRATION_STATUS reg_status, void* user_context)
+static void dps_registation_status(DPS_REGISTRATION_STATUS reg_status, void* user_context)
 {
     if (user_context == NULL)
     {
@@ -133,18 +136,18 @@ static void dps_registation_status(DRS_REGISTRATION_STATUS reg_status, void* use
     {
         DPS_CLIENT_SAMPLE_INFO* local_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
 
-        TRACEP("DPS Status: ", ENUM_TO_STRING(DRS_REGISTRATION_STATUS, reg_status));
-        if (reg_status == DRS_REGISTRATION_STATUS_CONNECTED)
+        TRACEP("DPS Status: ", ENUM_TO_STRING(DPS_REGISTRATION_STATUS, reg_status));
+        if (reg_status == DPS_REGISTRATION_STATUS_CONNECTED)
         {
             // Slow down the query of the device until after public preview
             local_dps_info->sleep_time = 600;
         }
-        else if (reg_status == DRS_REGISTRATION_STATUS_REGISTERING)
+        else if (reg_status == DPS_REGISTRATION_STATUS_REGISTERING)
         {
             // Slow down the query of the device  until after public preview
             local_dps_info->sleep_time = 900;
         }
-        else if (reg_status == DRS_REGISTRATION_STATUS_ASSIGNING)
+        else if (reg_status == DPS_REGISTRATION_STATUS_ASSIGNING)
         {
             // Slow down the query of the device  until after public preview
             local_dps_info->sleep_time = 1200;
@@ -152,12 +155,12 @@ static void dps_registation_status(DRS_REGISTRATION_STATUS reg_status, void* use
     }
 }
 
-static void iothub_dps_register_device(IOTHUB_DRS_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
+static void iothub_dps_register_device(DPS_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
 {
 	TRACE(__FUNCTION__);
 
 	DPS_CLIENT_SAMPLE_INFO* reg_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-	if (reg_dps_info != NULL && register_result == IOTHUB_DRS_OK)
+	if (reg_dps_info != NULL && register_result == DPS_CLIENT_OK)
 	{
 		std::string fullUri = iothub_uri;
 		fullUri += "/";
@@ -249,13 +252,13 @@ void DoDpsWork()
 			TRACE("Start registration process");
 			dps_info.registration_complete = DPS_RUNNING;
 
-			IOTHUB_DRS_LL_HANDLE handle;
-            if ((handle = IoTHub_DRS_LL_Create(dps_uri.data(), dps_scope_id.data(), DPS_PROTOCOL_TYPE_HTTP, on_dps_error_callback, &dps_info)) == NULL)
+			DPS_LL_HANDLE handle;
+            if ((handle = DPS_LL_Create(dps_uri.data(), dps_scope_id.data(), DPS_HTTP_Protocol, on_dps_error_callback, &dps_info)) == NULL)
 			{
 				TRACE("failed calling IoTHub_DRS_LL_Create");
 				return;
 			}
-            if (IoTHub_DRS_LL_Register_Device(handle, iothub_dps_register_device, &dps_info, dps_registation_status, &dps_info) != IOTHUB_DRS_OK)
+            if (DPS_LL_Register_Device(handle, iothub_dps_register_device, &dps_info, dps_registation_status, &dps_info) != DPS_CLIENT_OK)
 			{
 				TRACE("failed calling IoTHub_DRS_LL_Register_Device");
 				return;
@@ -263,11 +266,11 @@ void DoDpsWork()
 
 			do
 			{
-				IoTHub_DRS_LL_DoWork(handle);
+				DPS_LL_DoWork(handle);
                 ThreadAPI_Sleep(dps_info.sleep_time);
 			} while (DPS_RUNNING == dps_info.registration_complete);
 
-			IoTHub_DRS_LL_Destroy(handle);
+			DPS_LL_Destroy(handle);
 
 			if (DPS_SUCCESS == dps_info.registration_complete)
 			{

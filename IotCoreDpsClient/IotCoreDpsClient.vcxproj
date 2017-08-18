@@ -129,18 +129,27 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='ARM'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\dps_client\dps_security_client.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c729}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c711}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c714}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='X64'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\dps_client\dps_security_client.vcxproj">
-      <Project>{07057A65-E852-3300-96F4-0D5DF1169BAD}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c712}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c715}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='Win32'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\dps_client\dps_security_client.vcxproj">
-      <Project>{26403CD4-E7A1-3020-9879-491C2597669D}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c713}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c716}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -20,19 +20,19 @@ echo .
 cd ..\x86
 msbuild c-utility\aziotsharedutil.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\dps_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
-msbuild dps_client\dps_security_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
+msbuild dps_client\dps_http_transport.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\tools\tpm_device_provision\tpm_device_provision.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 
 cd ..\arm
 msbuild c-utility\aziotsharedutil.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\dps_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
-msbuild dps_client\dps_security_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
+msbuild dps_client\dps_http_transport.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\tools\tpm_device_provision\tpm_device_provision.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 
 cd ..\x64
 msbuild c-utility\aziotsharedutil.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\dps_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
-msbuild dps_client\dps_security_client.vcxproj /p:TargetPlatformVersion=10.0.14393.0
+msbuild dps_client\dps_http_transport.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 msbuild dps_client\tools\tpm_device_provision\tpm_device_provision.vcxproj /p:TargetPlatformVersion=10.0.14393.0
 
 
