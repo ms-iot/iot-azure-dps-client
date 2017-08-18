@@ -24,7 +24,6 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "azure_c_shared_utility\umock_c_prod.h"
 #include "azure_c_shared_utility\threadapi.h"
-#include "azure_hub_modules\iothub_drs_client.h"
 #include "azure_hub_modules\iothub_device_auth.h"
 
 #include "azure_c_shared_utility\macro_utils.h"
