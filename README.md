@@ -3,7 +3,7 @@
 ## get from github
 Clone recursively:
 
-    git clone --recursive https://github.com/ms-iot/iot-core-azure-dps-client
+    git clone --recursive https://github.com/ms-iot/iot-core-azure-dps-client -b develop
 
 If you find that the deps folder is empty, try this:
 
