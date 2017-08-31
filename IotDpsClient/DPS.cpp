@@ -16,15 +16,15 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "DPSService.h"
 #include "..\SharedUtilities\Logger.h"
 
-#define SERVICE_NAME             L"IotCoreDpsClient"
-#define SERVICE_DISPLAY_NAME     L"Device Registration Service"
+#define SERVICE_NAME             L"IotDpsClient"
+#define SERVICE_DISPLAY_NAME     L"Device Provisioning Service"
 #define SERVICE_START_TYPE       SERVICE_DEMAND_START
-#define SERVICE_DEPENDENCIES     L""
+#define SERVICE_DEPENDENCIES     L"w32time"
 #define SERVICE_ACCOUNT          L"NT AUTHORITY\\SYSTEM"
 #define SERVICE_PASSWORD         L""
 
 void DoDpsWork();
-void ResetDps0();
+void ResetDps();
 
 [Platform::MTAThread]
 int wmain(int argc, wchar_t *argv[])
@@ -52,9 +52,9 @@ int wmain(int argc, wchar_t *argv[])
 		{
 			DoDpsWork();
 		}
-		else if (_wcsicmp(L"resetdps0", argv[1] + 1) == 0)
+		else if (_wcsicmp(L"resetdps", argv[1] + 1) == 0)
 		{
-			ResetDps0();
+			ResetDps();
 		}
 	}
     else

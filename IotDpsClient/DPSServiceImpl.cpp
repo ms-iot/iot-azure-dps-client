@@ -90,23 +90,33 @@ DPS_SECURE_DEVICE_HANDLE dps_sec;
 DEFINE_ENUM_STRINGS(DPS_ERROR, DPS_ERROR_VALUES);
 DEFINE_ENUM_STRINGS(DPS_REGISTRATION_STATUS, DPS_REGISTRATION_STATUS_VALUES);
 
-void ResetDps(unsigned int slot)
+int GetDpsTpmSlot()
 {
 	TRACE(__FUNCTION__);
+
+	std::wstring wdps_tpm_slot;
+	if (ERROR_SUCCESS != Utils::TryReadRegistryValue(L"system\\currentcontrolset\\services\\iotdpsclient\\parameters", L"tpm_slot", wdps_tpm_slot))
+	{
+		TRACE("tpm slot not found in registry.");
+		wdps_tpm_slot = L"0";
+	}
+	TRACEP(L"tpm slot: ", wdps_tpm_slot.c_str());
+
+	return _wtoi(wdps_tpm_slot.c_str());
+}
+
+void ResetDps()
+{
+	TRACE(__FUNCTION__);
+
+	int dps_tpm_slot = GetDpsTpmSlot();
 
 	//   limpet <slot> -DUR
 	TRACE("call limpet <slot> -EHK");
-	EvictHmacKey(slot);
+	EvictHmacKey(dps_tpm_slot);
 	//   limpet <slot> -DUR
 	TRACE("call limpet <slot> -DUR");
-	DestroyServiceUrl(slot);
-}
-
-void ResetDps0()
-{
-	TRACE(__FUNCTION__);
-
-	DestroyServiceUrl(0);
+	DestroyServiceUrl(dps_tpm_slot);
 }
 
 static void on_dps_error_callback(DPS_ERROR error_type, void* user_context)
@@ -180,8 +190,8 @@ void DoDpsWork()
  
 	xlogging_set_log_function(&LoggingForDpsSdk);
 
-	// Query the TPM for connection string (assume slot is 0)
-	std::string emptyToken = "<SASToken/>";
+	// Query the service url
+	std::string emptyUrl = "";
 	std::string serviceUrl = "";
 	
 	try {
@@ -190,22 +200,20 @@ void DoDpsWork()
 	catch (DMException dme)
 	{
 		TRACEP("Failed to get ServiceUrl: ", dme.what());
-		serviceUrl = emptyToken;
+		serviceUrl = emptyUrl;
 		TRACEP("Setting ServiceUrl: ", serviceUrl.c_str());
-		TRACEP("        emptyToken: ", emptyToken.c_str());
 	}
 
     auto it = std::search(
         serviceUrl.begin(), serviceUrl.end(),
-        emptyToken.begin(), emptyToken.end());
+		emptyUrl.begin(), emptyUrl.end());
     if (it != serviceUrl.end())
     {
 		// If connection string is not present, query 
-		// azure device registration service for it
-		TRACE("No SAS token found in TPM, query DPS");
+		// azure device provisioning service for it
+		TRACE("Service URL not found in TPM, query DPS");
 
-		// Wait for an internet connection to be
-		// established
+		// Wait for an internet connection to be established
 		DWORD result;
 		while (!InternetGetConnectedState(&result, 0))
 		{
@@ -217,24 +225,17 @@ void DoDpsWork()
 		dps_info.registration_complete = DPS_RUNNING;
         dps_info.sleep_time = 10;
 
-		std::wstring wdps_slot;
-		if (ERROR_SUCCESS != Utils::TryReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_slot", wdps_slot))
-		{
-			TRACE("tpm slot not found in registry.");
-			wdps_slot = L"0";
-		}
-		TRACEP(L"tpm slot: ", wdps_slot.c_str());
-		dps_info.slot = _wtoi(wdps_slot.c_str());
+		dps_info.slot = GetDpsTpmSlot();
 
 		std::wstring wdps_uri =
-			Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_uri");
+			Utils::ReadRegistryValue(L"system\\currentcontrolset\\services\\iotdpsclient\\parameters", L"dps_uri");
 		TRACEP(L"uri from registry: ", wdps_uri.c_str());
 
         std::string dps_uri = Utils::WideToMultibyte(wdps_uri.c_str());
 		TRACEP("uri to char: ", dps_uri.data());
 
         std::wstring wdps_scope_id =
-            Utils::ReadRegistryValue(L"System\\CurrentControlSet\\Control\\Wininit", L"dps_scope");
+            Utils::ReadRegistryValue(L"system\\currentcontrolset\\services\\iotdpsclient\\parameters", L"dps_scope");
         TRACEP(L"scope from registry: ", wdps_scope_id.c_str());
 
         std::string dps_scope_id = Utils::WideToMultibyte(wdps_scope_id.c_str());
@@ -245,7 +246,7 @@ void DoDpsWork()
 			TRACE("Failed calling platform_init");
 		}
 
-		ResetDps(dps_info.slot);
+		ResetDps();
 
 		do
 		{
@@ -255,12 +256,12 @@ void DoDpsWork()
 			DPS_LL_HANDLE handle;
             if ((handle = DPS_LL_Create(dps_uri.data(), dps_scope_id.data(), DPS_HTTP_Protocol, on_dps_error_callback, &dps_info)) == NULL)
 			{
-				TRACE("failed calling IoTHub_DRS_LL_Create");
+				TRACE("failed calling DPS_LL_Create");
 				return;
 			}
             if (DPS_LL_Register_Device(handle, iothub_dps_register_device, &dps_info, dps_registation_status, &dps_info) != DPS_CLIENT_OK)
 			{
-				TRACE("failed calling IoTHub_DRS_LL_Register_Device");
+				TRACE("failed calling DPS_LL_Register_Device");
 				return;
 			}
 

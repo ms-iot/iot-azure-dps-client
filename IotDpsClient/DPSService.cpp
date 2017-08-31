@@ -21,13 +21,6 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void DoDpsWork();
 
-// Thread will check whether it is time to renew the connection string 
-// every CONNECTION_RENEWAL_CHECK_INTERVAL seconds.
-// Making this longer affects the time the service takes to response
-// to stop requests.
-// ToDo: consider waiting on multiple events.
-#define CONNECTION_RENEWAL_CHECK_INTERVAL 5
-
 using namespace std;
 using namespace std::chrono;
 using namespace std::experimental;
@@ -96,8 +89,7 @@ void WINAPI DPSService::ServiceCtrlHandler(DWORD ctrl)
 }
 
 DPSService::DPSService(const wstring& serviceName) :
-    _stopSignaled(false),
-    _renewConnectionString(false)
+    _stopSignaled(false)
 {
     TRACE(__FUNCTION__);
     assert(serviceName.size() != 0);

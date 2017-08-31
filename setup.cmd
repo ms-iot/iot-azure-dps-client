@@ -38,10 +38,10 @@ REM msbuild dps_client\tools\tpm_device_provision\tpm_device_provision.vcxproj /
 
 
 echo .
-echo "Building IotCoreDpsClient"
+echo "Building IotDpsClient"
 echo .
 cd ..\..\..
-msbuild IotCoreDpsClient\IotCoreDpsClient.vcxproj /p:Platform=Win32
-msbuild IotCoreDpsClient\IotCoreDpsClient.vcxproj /p:Platform=ARM
-REM msbuild IotCoreDpsClient\IotCoreDpsClient.vcxproj /p:Platform=X64
+msbuild IotDpsClient\IotDpsClient.vcxproj /p:Platform=Win32
+msbuild IotDpsClient\IotDpsClient.vcxproj /p:Platform=ARM
+REM msbuild IotDpsClient\IotDpsClient.vcxproj /p:Platform=X64
 

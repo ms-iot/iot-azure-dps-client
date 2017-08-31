@@ -54,8 +54,6 @@ private:
     virtual void OnStart();
     virtual void OnStop();
 
-    void DisableEnqueue();
-
     // Helpers
     void SetServiceStatus(DWORD currentState, DWORD win32ExitCode = NO_ERROR);
 
@@ -68,23 +66,10 @@ private:
     std::wstring _name;
     SERVICE_STATUS _status;
     SERVICE_STATUS_HANDLE _statusHandle;
-
-    // timer handle
-    HANDLE _timerQueueHandle;
-
+	
     // threads
     Utils::JoiningThread _workerThread;
-    // Utils::JoiningThread _connectionRenewerThread;
-
-    // TaskQueue _taskQueue;
-
+    
     // Synchronization between worker thread and main thread for exiting...
     std::atomic<bool> _stopSignaled;
-    bool _renewConnectionString;
-
-    // Azure proxy
-    // AzureProxy _cloudProxy;
-
-    // Models
-    // ModelManager _modelManager;
 };
