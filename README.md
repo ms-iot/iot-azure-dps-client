@@ -29,7 +29,7 @@ Be sure you are using Visual Studio 2015 with Visual C++ (this last bit is impor
     setup.cmd
 
 ## provision DPS
-Deploy the provisioning tool (tpm_device_provision.exe built in the previous step) to Windows Iot device.
+Deploy the provisioning tool (tpm_device_provision.exe built in the previous step) to Windows IoT device.
 
 Run provisioning tool (get CONNECTION_STRING from Azure DPS service, DEVICE_NAME is up to you):
 
@@ -48,7 +48,7 @@ To do this from a command line, run commands like this:
     reg add hklm\system\currentcontrolset\services\iotdpsclient\parameters /v dps_scope /t REG_SZ /d <DPS_SCOPE>
 
 ## configure IotDpsClient
-Deploy IotDpsClient.exe to Windows Iot device.
+Deploy IotDpsClient.exe to Windows IoT device.
 
 Configure as service:
 
