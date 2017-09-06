@@ -29,9 +29,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D63AA529-F34F-4CF4-8D68-5093F981AB64}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>IotCoreDrsClient</RootNamespace>
+    <RootNamespace>IotDpsClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
-    <ProjectName>IotCoreDpsClient</ProjectName>
+    <ProjectName>IotDpsClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
@@ -81,7 +81,7 @@
       <AdditionalUsingDirectories Condition="'$(VisualStudioVersion)' == '15.0'">$(VSInstallDir)\Common7\IDE\VC\vcpackages;$(WindowsSdkDir)\UnionMetadata;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalUsingDirectories Condition="'$(VisualStudioVersion)' == '14.0'">$(VCInstallDir)\vcpackages;$(WindowsSdkDir)\UnionMetadata;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);..\deps\iot-core-azure-dm-client\src\SharedUtilities;..\deps\azure-iot-device-auth\c-utility\inc;..\deps\azure-iot-device-auth\iothub_device_auth\inc;..\deps\iot-core-azure-dm-client\src\DMMessage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);..\deps\iot-core-azure-dm-client\src\SharedUtilities;..\deps\azure-iot-device-auth\c-utility\inc;..\deps\iot-core-azure-dm-client\src\DMMessage;..\deps\azure-iot-device-auth\dps_client\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,27 +129,27 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='ARM'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\iothub_device_auth\dps_security_client.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c729}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c711}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\iothub_device_auth\iothub_drs_client.vcxproj">
-      <Project>{9dbf81ae-9ab4-3ef6-8706-6b28e061cdb2}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\arm\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c714}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='X64'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\iothub_device_auth\dps_security_client.vcxproj">
-      <Project>{07057A65-E852-3300-96F4-0D5DF1169BAD}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c712}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\iothub_device_auth\iothub_drs_client.vcxproj">
-      <Project>{A3FA2BAA-A380-3F81-AA1F-F909CCABF1AE}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x64\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c715}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='Win32'">
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\iothub_device_auth\dps_security_client.vcxproj">
-      <Project>{26403CD4-E7A1-3020-9879-491C2597669D}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\dps_client\dps_client.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c713}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\iothub_device_auth\iothub_drs_client.vcxproj">
-      <Project>{03EB180E-DB63-3B08-A85E-14BF93F2999F}</Project>
+    <ProjectReference Include="..\deps\azure-iot-device-auth\x86\dps_client\dps_http_transport.vcxproj">
+      <Project>{839bd985-55df-32c1-abbc-bae7bf24c716}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
