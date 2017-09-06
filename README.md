@@ -1,9 +1,9 @@
-# iot-core-azure-dps-client
+# iot-azure-dps-client
 
 ## get from github
 Clone recursively:
 
-    git clone --recursive https://github.com/ms-iot/iot-core-azure-dps-client -b develop
+    git clone --recursive https://github.com/ms-iot/iot-azure-dps-client
 
 If you find that the deps folder is empty, try this:
 
@@ -29,35 +29,32 @@ Be sure you are using Visual Studio 2015 with Visual C++ (this last bit is impor
     setup.cmd
 
 ## provision DPS
-Deploy the provisioning tool (tpm_device_provision.exe built in the previous step) to IotCore device.
+Deploy the provisioning tool (tpm_device_provision.exe built in the previous step) to Windows IoT device.
 
 Run provisioning tool (get CONNECTION_STRING from Azure DPS service, DEVICE_NAME is up to you):
 
     tpm_device_provision.exe -c <CONNECTION_STRING> -d <DEVICE_NAME>
 
-## configure registry for IotCoreDpsClient
+## configure registry for IotDpsClient
 Add this information to the registry:
 * `TPM_SLOT`: logical slot in TPM to store iothub connection string
 * `DPS_URI`: URI of DPS service containing information for this device
-* `DPS_SCOPE`: TBD (get this from Azure)
+* `DPS_SCOPE`: Scope Id is assigned to a customer when they create the DPS hub and it acts as a namespace for the registration id.
 
 To do this from a command line, run commands like this:
 
-    reg add HKLM\System\CurrentControlSet\Control\Wininit /v dps_slot /t REG_SZ /d <TPM_SLOT>
-    reg add HKLM\System\CurrentControlSet\Control\Wininit /v dps_uri /t REG_SZ /d <DPS_URI>
-    reg add HKLM\System\CurrentControlSet\Control\Wininit /v dps_scope /t REG_SZ /d <DPS_SCOPE>
+    reg add hklm\system\currentcontrolset\services\iotdpsclient\parameters  /v tpm_slot /t REG_SZ /d <TPM_SLOT>
+    reg add hklm\system\currentcontrolset\services\iotdpsclient\parameters /v dps_uri /t REG_SZ /d <DPS_URI>
+    reg add hklm\system\currentcontrolset\services\iotdpsclient\parameters /v dps_scope /t REG_SZ /d <DPS_SCOPE>
 
-
-## configure IotCoreDpsClient
-Deploy IotCoreDpsClient.exe to IotCore device.
+## configure IotDpsClient
+Deploy IotDpsClient.exe to Windows IoT device.
 
 Configure as service:
 
-    IotCoreDpsClient.exe -install
-    sc config IotCoreDpsClient start=auto
-    sc config IotCoreDpsClient depend=w32time
+    IotDpsClient.exe -install
+    sc config IotDpsClient start=auto
 
 Run from command line:
 
-    IotCoreDpsClient.exe -debug
-
+    IotDpsClient.exe -debug

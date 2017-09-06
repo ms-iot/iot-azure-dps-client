@@ -29,9 +29,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D63AA529-F34F-4CF4-8D68-5093F981AB64}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>IotCoreDrsClient</RootNamespace>
+    <RootNamespace>IotDpsClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
-    <ProjectName>IotCoreDpsClient</ProjectName>
+    <ProjectName>IotDpsClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>

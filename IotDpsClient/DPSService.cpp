@@ -1,15 +1,15 @@
 /*
 Copyright 2017 Microsoft
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
 subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "stdafx.h"
@@ -20,13 +20,6 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "..\SharedUtilities\DMException.h"
 
 void DoDpsWork();
-
-// Thread will check whether it is time to renew the connection string 
-// every CONNECTION_RENEWAL_CHECK_INTERVAL seconds.
-// Making this longer affects the time the service takes to response
-// to stop requests.
-// ToDo: consider waiting on multiple events.
-#define CONNECTION_RENEWAL_CHECK_INTERVAL 5
 
 using namespace std;
 using namespace std::chrono;
@@ -96,8 +89,7 @@ void WINAPI DPSService::ServiceCtrlHandler(DWORD ctrl)
 }
 
 DPSService::DPSService(const wstring& serviceName) :
-    _stopSignaled(false),
-    _renewConnectionString(false)
+    _stopSignaled(false)
 {
     TRACE(__FUNCTION__);
     assert(serviceName.size() != 0);
@@ -252,15 +244,15 @@ void DPSService::WriteErrorLogEntry(const wstring& function, DWORD errorCode)
 void DPSService::OnStart()
 {
     TRACE(__FUNCTION__);
-    
-	_workerThread = thread(ServiceWorkerThread, this);
+
+    _workerThread = thread(ServiceWorkerThread, this);
 }
 
 void DPSService::ServiceWorkerThread(void*)
 {
-	TRACE(__FUNCTION__);
+    TRACE(__FUNCTION__);
 
-	DoDpsWork();
+    DoDpsWork();
 }
 
 void DPSService::OnStop()
