@@ -266,7 +266,7 @@ void DPSService::Install(
     const wstring& serviceName,
     const wstring& displayName,
     DWORD startType,
-    const wstring& dependencies,
+    LPCWSTR dependencies,
     const wstring& account,
     const wstring& password)
 {
@@ -298,7 +298,7 @@ void DPSService::Install(
         szPath,                         // Service's binary
         NULL,                           // No load ordering group
         NULL,                           // No tag identifier
-        dependencies.c_str(),           // Dependencies
+        dependencies,                   // Dependencies
         account.c_str(),                // Service running account
         password.c_str()                // Password of the account
     );

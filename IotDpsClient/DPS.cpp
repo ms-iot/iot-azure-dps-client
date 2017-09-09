@@ -19,7 +19,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SERVICE_NAME             L"IotDpsClient"
 #define SERVICE_DISPLAY_NAME     L"Device Provisioning Service"
 #define SERVICE_START_TYPE       SERVICE_DEMAND_START
-#define SERVICE_DEPENDENCIES     L"w32time"
+#define SERVICE_DEPENDENCIES     L"w32time\0"
 #define SERVICE_ACCOUNT          L"NT AUTHORITY\\SYSTEM"
 #define SERVICE_PASSWORD         L""
 

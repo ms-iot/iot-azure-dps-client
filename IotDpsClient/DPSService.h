@@ -28,7 +28,7 @@ public:
         const std::wstring&  serviceName,
         const std::wstring&  displayName,
         DWORD startType,
-        const std::wstring&  dependencies,
+        LPCWSTR  dependencies,
         const std::wstring&  account,
         const std::wstring&  password);
 

@@ -1,8 +1,7 @@
-[submodule "azure-iot-device-auth"]
-	path = deps/azure-iot-device-auth
-	url = https://github.com/azure/azure-iot-device-auth
-	branch = master
 [submodule "iot-core-azure-dm-client"]
 	path = deps/iot-core-azure-dm-client
 	url = https://github.com/ms-iot/iot-core-azure-dm-client
 	branch = master
+[submodule "deps/azure-iot-sdk-c"]
+	path = deps/azure-iot-sdk-c
+	url = https://github.com/Azure/azure-iot-sdk-c

@@ -3,7 +3,7 @@ echo .
 echo "Using CMAKE to set up Azure projects"
 echo .
 echo "Disabled x64 for now as the Azure SDK is throwing few errors-following up with Azure separately"
-cd deps\azure-iot-device-auth
+cd deps\azure-iot-sdk-c
 mkdir x86
 REM mkdir x64
 mkdir arm

@@ -30,6 +30,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "azure_c_shared_utility\buffer_.h"
 #include "azure_hub_modules\secure_device_factory.h"
 #include "azure_c_shared_utility/platform.h"
+#include "azure_c_shared_utility\xlogging.h"
 
 #include "azure_hub_modules/dps_client.h"
 #include "azure_hub_modules/dps_transport_http_client.h"
@@ -194,7 +195,6 @@ void DoDpsWork()
     xlogging_set_log_function(&LoggingForDpsSdk);
 
     // Query the service url
-    string emptyUrl = "";
     string serviceUrl = "";
 
     try {
@@ -203,14 +203,10 @@ void DoDpsWork()
     catch (DMException dme)
     {
         TRACEP("Failed to get ServiceUrl: ", dme.what());
-        serviceUrl = emptyUrl;
         TRACEP("Setting ServiceUrl: ", serviceUrl.c_str());
     }
 
-    auto it = search(
-        serviceUrl.begin(), serviceUrl.end(),
-        emptyUrl.begin(), emptyUrl.end());
-    if (it != serviceUrl.end())
+    if (serviceUrl.empty())
     {
         // If connection string is not present, query 
         // azure device provisioning service for it
