@@ -18,8 +18,6 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <assert.h>
 #include "DPSService.h"
 #include "TpmSupport.h"
-#include "..\SharedUtilities\DMException.h"
-#include "..\SharedUtilities\Logger.h"
 
 
 #include "azure_c_shared_utility\umock_c_prod.h"
@@ -200,7 +198,7 @@ void DoDpsWork()
     try {
         serviceUrl = GetServiceUrl(GetDpsTpmSlot());
     }
-    catch (DMException dme)
+    catch (const IotException& dme)
     {
         TRACEP("Failed to get ServiceUrl: ", dme.what());
         TRACEP("Setting ServiceUrl: ", serviceUrl.c_str());

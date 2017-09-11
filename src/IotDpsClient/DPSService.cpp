@@ -16,8 +16,12 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <filesystem>
 #include <assert.h>
 #include "DPSService.h"
-#include "TpmSupport.h"
-#include "..\SharedUtilities\DMException.h"
+
+#define SERVICE_DISPLAY_NAME     L"Device Provisioning Service"
+#define SERVICE_START_TYPE       SERVICE_DEMAND_START
+#define SERVICE_DEPENDENCIES     L"w32time\0"
+#define SERVICE_ACCOUNT          L"NT AUTHORITY\\SYSTEM"
+#define SERVICE_PASSWORD         L""
 
 void DoDpsWork();
 
@@ -41,7 +45,7 @@ void DPSService::Run(DPSService &service)
 
     if (!StartServiceCtrlDispatcher(serviceTable))
     {
-        throw DMExceptionWithErrorCode(GetLastError());
+        throw IotExceptionWithErrorCode(GetLastError());
     }
 }
 
@@ -53,7 +57,7 @@ void WINAPI DPSService::ServiceMain(DWORD, PWSTR*)
     s_service->_statusHandle = RegisterServiceCtrlHandler(s_service->_name.c_str(), ServiceCtrlHandler);
     if (s_service->_statusHandle == NULL)
     {
-        throw DMExceptionWithErrorCode(GetLastError());
+        throw IotExceptionWithErrorCode(GetLastError());
     }
 
     s_service->Start();
@@ -121,7 +125,7 @@ void DPSService::Start()
         OnStart();
         SetServiceStatus(SERVICE_RUNNING);
     }
-    catch (const DMException&)
+    catch (const IotException&)
     {
         WriteEventLogEntry(L"Service failed to start.", EVENTLOG_ERROR_TYPE);
         SetServiceStatus(SERVICE_STOPPED);
@@ -139,7 +143,7 @@ void DPSService::Stop()
         OnStop();
         SetServiceStatus(SERVICE_STOPPED);
     }
-    catch (const DMException&)
+    catch (const IotException&)
     {
         WriteEventLogEntry(L"Service failed to stop.", EVENTLOG_ERROR_TYPE);
         SetServiceStatus(originalState);
@@ -262,15 +266,14 @@ void DPSService::OnStop()
     // ToDo: Need a graceful way to signal the work thread to exit.
 }
 
-void DPSService::Install(
-    const wstring& serviceName,
-    const wstring& displayName,
-    DWORD startType,
-    LPCWSTR dependencies,
-    const wstring& account,
-    const wstring& password)
+void DPSService::Install(const wstring& serviceName)
 {
     TRACE(__FUNCTION__);
+    const std::wstring&  displayName = SERVICE_DISPLAY_NAME;
+    DWORD startType = SERVICE_START_TYPE;
+    LPCWSTR  dependencies = SERVICE_DEPENDENCIES;
+    const std::wstring&  account = SERVICE_ACCOUNT;
+    const std::wstring&  password = SERVICE_PASSWORD;
 
     wchar_t szPath[MAX_PATH];
     if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath)) == 0)

@@ -16,7 +16,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <thread>
 #include <atomic>
 #include <future>
-#include "..\SharedUtilities\Utils.h"
+#include "Utils.h"
 
 class DPSService
 {
@@ -24,13 +24,7 @@ public:
 
     DPSService(const std::wstring& serviceName);
 
-    static void DPSService::Install(
-        const std::wstring&  serviceName,
-        const std::wstring&  displayName,
-        DWORD startType,
-        LPCWSTR  dependencies,
-        const std::wstring&  account,
-        const std::wstring&  password);
+    static void DPSService::Install(const std::wstring&  serviceName);
 
     static void DPSService::Uninstall(const std::wstring&  serviceName);
 

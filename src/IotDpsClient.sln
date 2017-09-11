@@ -3,12 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IotDpsClient", "IotDpsClient.vcxproj", "{D63AA529-F34F-4CF4-8D68-5093F981AB64}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IotDpsClient", "IotDpsClient\IotDpsClient.vcxproj", "{D63AA529-F34F-4CF4-8D68-5093F981AB64}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedUtilities", "SharedUtilities\SharedUtilities.vcxitems", "{45D41ACC-2C3C-43D2-BC10-02AA73FFC7C7}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\deps\iot-core-azure-dm-client\src\DMTpm\DMTpm.vcxitems*{d63aa529-f34f-4cf4-8d68-5093f981ab64}*SharedItemsImports = 4
-		..\deps\iot-core-azure-dm-client\src\SharedUtilities\SharedUtilities.vcxitems*{d63aa529-f34f-4cf4-8d68-5093f981ab64}*SharedItemsImports = 4
+		SharedUtilities\SharedUtilities.vcxitems*{d63aa529-f34f-4cf4-8d68-5093f981ab64}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM

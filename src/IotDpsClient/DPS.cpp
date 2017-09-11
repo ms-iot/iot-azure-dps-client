@@ -14,14 +14,8 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "stdafx.h"
 #include "DPSService.h"
-#include "..\SharedUtilities\Logger.h"
 
 #define SERVICE_NAME             L"IotDpsClient"
-#define SERVICE_DISPLAY_NAME     L"Device Provisioning Service"
-#define SERVICE_START_TYPE       SERVICE_DEMAND_START
-#define SERVICE_DEPENDENCIES     L"w32time\0"
-#define SERVICE_ACCOUNT          L"NT AUTHORITY\\SYSTEM"
-#define SERVICE_PASSWORD         L""
 
 void DoDpsWork();
 void ResetDps();
@@ -35,14 +29,7 @@ int wmain(int argc, wchar_t *argv[])
     {
         if (_wcsicmp(L"install", argv[1] + 1) == 0)
         {
-            DPSService::Install(
-                SERVICE_NAME,               // Name of service
-                SERVICE_DISPLAY_NAME,       // Name to display
-                SERVICE_START_TYPE,         // Service start type
-                SERVICE_DEPENDENCIES,       // Dependencies
-                SERVICE_ACCOUNT,            // Service running account
-                SERVICE_PASSWORD            // Password of the account
-            );
+            DPSService::Install(SERVICE_NAME);
         }
         else if (_wcsicmp(L"remove", argv[1] + 1) == 0)
         {
