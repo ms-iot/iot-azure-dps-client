@@ -42,7 +42,6 @@ Setup cloud resources by following steps mentioned in https://docs.microsoft.com
 * Connect to device using PowerShell by using device administrator credentials from your development machine.
 
 * Copy the provisioning tool (tpm_device_provision.exe built in the previous step) to Windows IoT device.
-
 * Run provisioning tool from remote powershell connection.
     tpm_device_provision.exe
     Tool prints endorsement key and registration id, please note down.
@@ -89,7 +88,7 @@ It should display the service uri of the device, which confirms the device regis
 
 ##########################################################################
 
-## Setting up remote PowerShell connection,
+## Setting up remote PowerShell connection
 	Start the PowerShell by running as administrator in your development machine.
 	$ip = "<Ip Address>"
 	$password = "<administrator password>"
@@ -103,7 +102,7 @@ It should display the service uri of the device, which confirms the device regis
 
     If you are having trouble using remote PowerShell connection see https://developer.microsoft.com/en-us/windows/iot/docs/powershell
 
-## Learn more about Azure device provisioning service,
+## Learn more about Azure device provisioning service
 * <a href="https://azure.microsoft.com/de-de/blog/azure-iot-hub-device-provisioning-service-preview-automates-device-connection-configuration/">Blog</a>
 * <a href="https://docs.microsoft.com/en-us/azure/iot-dps/">Documentation</a>
 * <a href="https://www.nuget.org/packages/Microsoft.Azure.Devices/">Service SDK (preview release)</a>
