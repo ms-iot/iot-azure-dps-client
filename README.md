@@ -48,7 +48,8 @@ Setup cloud resources by following steps mentioned in https://docs.microsoft.com
     Tool prints endorsement key and registration id, please note down.
   
   Here is the screenshot for reference,
-  <img src="docs\tpm_device_provision.png"/>
+  
+  <img src="docs/tpm_device_provision.PNG"/>
 
 * Enroll the device in DPS by following TPM based devices steps in the below link,
     https://docs.microsoft.com/en-us/azure/iot-dps/tutorial-provision-device-to-hub#enrolldevice
