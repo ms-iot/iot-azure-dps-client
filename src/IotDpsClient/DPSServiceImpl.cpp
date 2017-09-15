@@ -1,4 +1,3 @@
-
 /*
 Copyright 2017 Microsoft
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -36,7 +35,7 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // 
 // This tpm_slot registry key/value pair needs to stay in sync with the one found here: 
-//    https://github.com/ms-iot/iot-core-azure-dm-client/blob/master/src/SystemConfigurator/CommandProcessor.cpp 
+//    https://github.com/ms-iot/iot-core-azure-dm-client/blob/develop/src/SystemConfigurator/CommandProcessor.cpp
 //
 
 #define IOTDPSCLIENT_PARAMETERS_REGPATH             L"system\\currentcontrolset\\services\\iotdpsclient\\parameters"
