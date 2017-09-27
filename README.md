@@ -76,15 +76,23 @@ Using one of the following options, register the device in IoTHub using the DPS 
         IotDpsClient.exe -install
         cmd /c "sc config IotDpsClient start= auto"
 
+## Managing the Windows IoT devices
+* Click [here](<https://docs.microsoft.com/en-us/windows/iot-core/manage-your-device/azureiotdm>) to learn more about Windows IoT device management using Azure IoT Hub 
+* Click [here](<https://github.com/ms-iot/iot-core-azure-dm-client>) for Device Management(DM) client library git repository.
+
 ## Verification
 
-* Option 1: From the command line, run "limpet <TPM_SLOT> -rur"
+* Option 1: From the command line,
 
-It should display the service uri of the device, which confirms the device registered successfully in Azure IoT Hub.
+    	run "limpet <TPM_SLOT> -rur"
+        It should display the service uri of the device, which confirms the device registered successfully in Azure IoT Hub.
+	
+    	run "limpet <TPM_SLOT> -ast"
+        It should display the IotHub connection string of the device, which confirms the device registered successfully in Azure IoT Hub.
 
 * Option 2: You can also use the Azure portal -> iothub device explorer and can find the device.
 
-* Option 3: Use the DM client for managing the device.
+* Option 3: Use the [Device Management(DM) hello world application](<https://github.com/ms-iot/iot-core-azure-dm-client/blob/master/docs/dm-hello-world-overview.md>) for managing the device.
 
 ##########################################################################
 
@@ -103,7 +111,7 @@ It should display the service uri of the device, which confirms the device regis
     If you are having trouble using remote PowerShell connection see https://developer.microsoft.com/en-us/windows/iot/docs/powershell
 
 ## Learn more about Azure device provisioning service
-* <a href="https://azure.microsoft.com/de-de/blog/azure-iot-hub-device-provisioning-service-preview-automates-device-connection-configuration/">Blog</a>
-* <a href="https://docs.microsoft.com/en-us/azure/iot-dps/">Documentation</a>
-* <a href="https://www.nuget.org/packages/Microsoft.Azure.Devices/">Service SDK (preview release)</a>
-* <a href="https://github.com/Azure/azure-iot-sdk-c">Device SDK</a>
+* [Blog](<https://azure.microsoft.com/de-de/blog/azure-iot-hub-device-provisioning-service-preview-automates-device-connection-configuration/>)
+* [Documentation](<https://docs.microsoft.com/en-us/azure/iot-dps/>)
+* [Service SDK (preview release)](<https://www.nuget.org/packages/Microsoft.Azure.Devices/>)
+* [Device SDK](<https://github.com/Azure/azure-iot-sdk-c>)
