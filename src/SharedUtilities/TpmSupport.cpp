@@ -59,7 +59,7 @@ std::string GetServiceUrl(int logicalId)
 
     const std::string response = RunLimpet(to_wstring(logicalId) + L" -rur");
 
-    std::regex rgx(".*<ServiceURI>\\s*(\\S+)\\s*</ServiceURI>.*");
+    std::regex rgx(".*<ServiceURI>\\s*(\\S*)\\s*</ServiceURI>.*");
     std::smatch match;
 
     if (std::regex_search(response.begin(), response.end(), match, rgx))
