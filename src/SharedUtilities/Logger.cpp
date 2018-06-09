@@ -22,8 +22,8 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Utils.h"
 
 using namespace std;
-using namespace std::tr2::sys;
 using namespace std::experimental;
+using namespace std::experimental::filesystem;
 
 #define LOGFILE_EXT             L".log"
 

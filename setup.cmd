@@ -5,10 +5,11 @@ echo .
 cd deps\azure-iot-sdk-c
 mkdir x86
 mkdir arm
+
 cd x86
-cmake -G "Visual Studio 14 2015" .. -Ddps_auth_type=tpm
+cmake -G "Visual Studio 15 2017" .. -Ddps_auth_type=tpm
 cd ..\arm
-cmake -G "Visual Studio 14 2015 ARM" .. -Ddps_auth_type=tpm
+cmake -G "Visual Studio 15 2017 ARM" .. -Ddps_auth_type=tpm
 
 echo .
 echo "Building Azure SDK libraries"
