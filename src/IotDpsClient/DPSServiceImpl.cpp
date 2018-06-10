@@ -227,13 +227,6 @@ void DoDpsWork()
         string dps_scope_id = Utils::WideToMultibyte(wdps_scope_id.c_str());
         TRACEP("scope to char: ", dps_scope_id.data());
 
-        SECURE_DEVICE_TYPE hsm_type = SECURE_DEVICE_TYPE_TPM;
-
-        if (platform_init() != 0 && prov_dev_security_init(hsm_type) != 0)
-        {
-            TRACE("Failed calling platform_init");
-        }
-
         ResetDps();
 
         do
@@ -249,6 +242,15 @@ void DoDpsWork()
                 TRACE("No internet connection found ... wait 5 seconds and check again.");
                 ThreadAPI_Sleep(5000);
             }
+
+            SECURE_DEVICE_TYPE hsm_type = SECURE_DEVICE_TYPE_TPM;
+
+            if (platform_init() != 0)
+            {
+                TRACE("Failed calling platform_init");
+            }
+
+            (void)prov_dev_security_init(hsm_type);
 
             PROV_DEVICE_LL_HANDLE handle;
             if ((handle = Prov_Device_LL_Create(dps_uri.data(), dps_scope_id.data(), Prov_Device_HTTP_Protocol)) == NULL)
