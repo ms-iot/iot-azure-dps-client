@@ -20,18 +20,18 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "TpmSupport.h"
 
 
-#include "azure_c_shared_utility\umock_c_prod.h"
-#include "azure_c_shared_utility\threadapi.h"
-#include "azure_hub_modules\iothub_device_auth.h"
-
-#include "azure_c_shared_utility\macro_utils.h"
-#include "azure_c_shared_utility\buffer_.h"
-#include "azure_hub_modules\secure_device_factory.h"
+#include "azure_c_shared_utility/threadapi.h"
+#include "azure_c_shared_utility/tickcounter.h"
+#include "azure_c_shared_utility/crt_abstractions.h"
 #include "azure_c_shared_utility/platform.h"
-#include "azure_c_shared_utility\xlogging.h"
+#include "azure_c_shared_utility/crt_abstractions.h"
+#include "azure_c_shared_utility/shared_util_options.h"
+#include "azure_c_shared_utility/http_proxy_io.h"
+#include "azure_c_shared_utility/xlogging.h"
 
-#include "azure_hub_modules/dps_client.h"
-#include "azure_hub_modules/dps_transport_http_client.h"
+#include "azure_prov_client/prov_device_ll_client.h"
+#include "azure_prov_client/prov_security_factory.h"
+#include "azure_prov_client/prov_transport_http_client.h"
 
 // 
 // This tpm_slot registry key/value pair needs to stay in sync with the one found here: 
@@ -83,22 +83,21 @@ void LoggingForDpsSdk(LOG_CATEGORY log_category, const char* file, const char* f
 #define DPS_FAILURE -1
 #define DPS_RUNNING 0
 
-typedef struct DPS_CLIENT_SAMPLE_INFO_TAG
+typedef struct CLIENT_SAMPLE_INFO_TAG
 {
     unsigned int sleep_time;
     char* iothub_uri;
     char* access_key_name;
     char* device_key;
     char* device_id;
-    unsigned int slot;
     int registration_complete;
-} DPS_CLIENT_SAMPLE_INFO;
+    int slot;
+} CLIENT_SAMPLE_INFO;
 
-DPS_CLIENT_SAMPLE_INFO dps_info;
-DPS_SECURE_DEVICE_HANDLE dps_sec;
+CLIENT_SAMPLE_INFO dps_info;
 
-DEFINE_ENUM_STRINGS(DPS_ERROR, DPS_ERROR_VALUES);
-DEFINE_ENUM_STRINGS(DPS_REGISTRATION_STATUS, DPS_REGISTRATION_STATUS_VALUES);
+DEFINE_ENUM_STRINGS(PROV_DEVICE_RESULT, PROV_DEVICE_RESULT_VALUE);
+DEFINE_ENUM_STRINGS(PROV_DEVICE_REG_STATUS, PROV_DEVICE_REG_STATUS_VALUES);
 
 int GetDpsTpmSlot()
 {
@@ -129,24 +128,7 @@ void ResetDps()
     DestroyServiceUrl(dps_tpm_slot);
 }
 
-static void on_dps_error_callback(DPS_ERROR error_type, void* user_context)
-{
-    TRACE(__FUNCTION__);
-
-    if (user_context == NULL)
-    {
-        TRACE("user_context is NULL");
-    }
-    else
-    {
-        DPS_CLIENT_SAMPLE_INFO* err_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-        TRACEP("Failure encountered in DPS info: ", ENUM_TO_STRING(DPS_ERROR, error_type));
-        err_dps_info->registration_complete = DPS_FAILURE;
-    }
-
-}
-
-static void dps_registation_status(DPS_REGISTRATION_STATUS reg_status, void* user_context)
+static void registation_status_callback(PROV_DEVICE_REG_STATUS reg_status, void* user_context)
 {
     if (user_context == NULL)
     {
@@ -154,40 +136,52 @@ static void dps_registation_status(DPS_REGISTRATION_STATUS reg_status, void* use
     }
     else
     {
-        DPS_CLIENT_SAMPLE_INFO* local_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
+        CLIENT_SAMPLE_INFO* local_dps_info = (CLIENT_SAMPLE_INFO*)user_context;
 
-        TRACEP("DPS Status: ", ENUM_TO_STRING(DPS_REGISTRATION_STATUS, reg_status));
-        if (reg_status == DPS_REGISTRATION_STATUS_CONNECTED)
+        TRACEP("Provisioning Status: ", ENUM_TO_STRING(PROV_DEVICE_REG_STATUS, reg_status));
+        if (reg_status == PROV_DEVICE_REG_STATUS_CONNECTED)
         {
             local_dps_info->sleep_time = 600;
         }
-        else if (reg_status == DPS_REGISTRATION_STATUS_REGISTERING)
+        else if (reg_status == PROV_DEVICE_REG_STATUS_REGISTERING)
         {
             local_dps_info->sleep_time = 900;
         }
-        else if (reg_status == DPS_REGISTRATION_STATUS_ASSIGNING)
+        else if (reg_status == PROV_DEVICE_REG_STATUS_ASSIGNING)
         {
             local_dps_info->sleep_time = 1200;
         }
     }
 }
 
-static void iothub_dps_register_device(DPS_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
+static void register_device_callback(PROV_DEVICE_RESULT register_result, const char* iothub_uri, const char* device_id, void* user_context)
 {
     TRACE(__FUNCTION__);
 
-    DPS_CLIENT_SAMPLE_INFO* reg_dps_info = (DPS_CLIENT_SAMPLE_INFO*)user_context;
-    if (reg_dps_info != NULL && register_result == DPS_CLIENT_OK)
+    if (user_context == NULL)
     {
-        string fullUri = iothub_uri;
-        fullUri += "/";
-        fullUri += device_id;
+        printf("user_context is NULL\r\n");
+    }
+    else
+    {
+        CLIENT_SAMPLE_INFO* reg_dps_info = (CLIENT_SAMPLE_INFO*)user_context;
+        if (register_result == PROV_DEVICE_RESULT_OK)
+        {
+            string fullUri = iothub_uri;
+            fullUri += "/";
+            fullUri += device_id;
 
-        // Store connection string in TPM:
-        //   limpet <slot> -SUR <uri>/<deviceId>
-        TRACEP("call limpet <slot> -SUR: ", fullUri.c_str());
-        StoreServiceUrl(reg_dps_info->slot, fullUri.c_str());
-        reg_dps_info->registration_complete = DPS_SUCCESS;
+            // Store connection string in TPM:
+            //   limpet <slot> -SUR <uri>/<deviceId>
+            TRACEP("call limpet <slot> -SUR: ", fullUri.c_str());
+            StoreServiceUrl(reg_dps_info->slot, fullUri.c_str());
+            reg_dps_info->registration_complete = DPS_SUCCESS;
+        }
+        else
+        {
+            TRACEP("Failure encountered on registration: %s\r\n", ENUM_TO_STRING(PROV_DEVICE_RESULT, register_result));
+            reg_dps_info->registration_complete = DPS_FAILURE;
+        }
     }
 }
 
@@ -215,9 +209,7 @@ void DoDpsWork()
         // azure device provisioning service for it
         TRACE("Service URL not found in TPM, query DPS");
 
-        memset(&dps_info, 0, sizeof(DPS_CLIENT_SAMPLE_INFO));
-        dps_info.registration_complete = DPS_RUNNING;
-        dps_info.sleep_time = 10;
+        memset(&dps_info, 0, sizeof(CLIENT_SAMPLE_INFO));
 
         dps_info.slot = GetDpsTpmSlot();
 
@@ -235,17 +227,13 @@ void DoDpsWork()
         string dps_scope_id = Utils::WideToMultibyte(wdps_scope_id.c_str());
         TRACEP("scope to char: ", dps_scope_id.data());
 
-        if (platform_init() != 0)
-        {
-            TRACE("Failed calling platform_init");
-        }
-
         ResetDps();
 
         do
         {
             TRACE("Start registration process");
             dps_info.registration_complete = DPS_RUNNING;
+            dps_info.sleep_time = 10;
 
             // Wait for an internet connection to be established
             DWORD result;
@@ -255,25 +243,35 @@ void DoDpsWork()
                 ThreadAPI_Sleep(5000);
             }
 
-            DPS_LL_HANDLE handle;
-            if ((handle = DPS_LL_Create(dps_uri.data(), dps_scope_id.data(), DPS_HTTP_Protocol, on_dps_error_callback, &dps_info)) == NULL)
+            SECURE_DEVICE_TYPE hsm_type = SECURE_DEVICE_TYPE_TPM;
+
+            if (platform_init() != 0)
+            {
+                TRACE("Failed calling platform_init");
+            }
+
+            (void)prov_dev_security_init(hsm_type);
+
+            PROV_DEVICE_LL_HANDLE handle;
+            if ((handle = Prov_Device_LL_Create(dps_uri.data(), dps_scope_id.data(), Prov_Device_HTTP_Protocol)) == NULL)
             {
                 TRACE("failed calling DPS_LL_Create");
                 return;
             }
-            if (DPS_LL_Register_Device(handle, iothub_dps_register_device, &dps_info, dps_registation_status, &dps_info) != DPS_CLIENT_OK)
+
+            if (Prov_Device_LL_Register_Device(handle, register_device_callback, &dps_info, registation_status_callback, &dps_info) != PROV_DEVICE_RESULT_OK)
             {
-                TRACE("failed calling DPS_LL_Register_Device");
+                TRACE("failed calling Prov_Device_LL_Register_Device");
                 return;
             }
 
             do
             {
-                DPS_LL_DoWork(handle);
+                Prov_Device_LL_DoWork(handle);
                 ThreadAPI_Sleep(dps_info.sleep_time);
             } while (DPS_RUNNING == dps_info.registration_complete);
 
-            DPS_LL_Destroy(handle);
+            Prov_Device_LL_Destroy(handle);
 
             if (DPS_SUCCESS == dps_info.registration_complete)
             {
@@ -290,5 +288,4 @@ void DoDpsWork()
     }
 
     TRACE("Exiting DoDpsWork");
-
 }

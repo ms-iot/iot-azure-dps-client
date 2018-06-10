@@ -79,10 +79,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <CompileAsWinRT>true</CompileAsWinRT>
-      <AdditionalUsingDirectories Condition="'$(VisualStudioVersion)' == '15.0'">$(VSInstallDir)\Common7\IDE\VC\vcpackages;$(WindowsSdkDir)\UnionMetadata;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories Condition="'$(VisualStudioVersion)' == '15.0'">$(VSInstallDir)\Common7\IDE\VC\vcpackages;$(WindowsSdkDir)\UnionMetadata;$(WindowsSdkDir)\UnionMetadata\$(TargetPlatformVersion);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalUsingDirectories Condition="'$(VisualStudioVersion)' == '14.0'">$(VCInstallDir)\vcpackages;$(WindowsSdkDir)\UnionMetadata;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(AzureSDKPath)\c-utility\inc;$(AzureSDKPath)\dps_client\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(AzureSDKPath)\c-utility\inc;$(AzureSDKPath)\provisioning_client\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,27 +130,36 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='ARM'">
-    <ProjectReference Include="$(AzureSDKPath)\arm\dps_client\dps_client.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c711}</Project>
+    <ProjectReference Include="$(AzureSDKPath)\arm\provisioning_client\prov_device_ll_client.vcxproj">
+      <Project>{12C4FE8D-C4B5-3ED2-A634-1CC7E30F55F8}</Project>
     </ProjectReference>
-    <ProjectReference Include="$(AzureSDKPath)\arm\dps_client\dps_http_transport.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c714}</Project>
+    <ProjectReference Include="$(AzureSDKPath)\arm\provisioning_client\prov_http_transport.vcxproj">
+      <Project>{19CBA61E-53F4-3ABB-84D7-61E1C386AA02}</Project>
+    </ProjectReference>
+    <ProjectReference Include="$(AzureSDKPath)\arm\c-utility\aziotsharedutil.vcxproj">
+      <Project>{669A1BD7-D977-3A47-B4B4-12436CD60BF7}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='X64'">
-    <ProjectReference Include="$(AzureSDKPath)\x64\dps_client\dps_client.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c712}</Project>
+    <ProjectReference Include="$(AzureSDKPath)\X64\provisioning_client\prov_device_ll_client.vcxproj">
+      <Project>{12C4FE8D-C4B5-3ED2-A634-1CC7E30F55F8}</Project>
     </ProjectReference>
-    <ProjectReference Include="$(AzureSDKPath)\x64\dps_client\dps_http_transport.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c715}</Project>
+    <ProjectReference Include="$(AzureSDKPath)\x64\provisioning_client\prov_http_transport.vcxproj">
+      <Project>{19CBA61E-53F4-3ABB-84D7-61E1C386AA02}</Project>
+    </ProjectReference>
+    <ProjectReference Include="$(AzureSDKPath)\X64\c-utility\aziotsharedutil.vcxproj">
+      <Project>{669A1BD7-D977-3A47-B4B4-12436CD60BF7}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup Condition="'$(Platform)'=='Win32'">
-    <ProjectReference Include="$(AzureSDKPath)\x86\dps_client\dps_client.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c713}</Project>
+       <ProjectReference Include="$(AzureSDKPath)\x86\provisioning_client\prov_device_ll_client.vcxproj">
+      <Project>{12C4FE8D-C4B5-3ED2-A634-1CC7E30F55F8}</Project>
     </ProjectReference>
-    <ProjectReference Include="$(AzureSDKPath)\x86\dps_client\dps_http_transport.vcxproj">
-      <Project>{839bd985-55df-32c1-abbc-bae7bf24c716}</Project>
+    <ProjectReference Include="$(AzureSDKPath)\x86\provisioning_client\prov_http_transport.vcxproj">
+      <Project>{19CBA61E-53F4-3ABB-84D7-61E1C386AA02}</Project>
+    </ProjectReference>
+    <ProjectReference Include="$(AzureSDKPath)\x86\c-utility\aziotsharedutil.vcxproj">
+      <Project>{669A1BD7-D977-3A47-B4B4-12436CD60BF7}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
