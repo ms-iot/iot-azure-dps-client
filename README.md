@@ -20,11 +20,11 @@ Be sure you have PERL configured:
 
 * Install [perl](https://www.perl.org/get.html). You can use either ActivePerl or Strawberry Pearl. Run the installer as administrator to avoid issues.
     
-Be sure you are using Visual Studio 2015 with Visual C++ (this last bit is important!)
+Be sure you are using Visual Studio 2017 with Visual C++ (this last bit is important!)
 
-## Build binaries for x86 and ARM
+## Build binaries for x86, ARM and X64
 
-    Start a VS 2015 developer command prompt
+    Start a VS 2017 developer command prompt
     cd <repo>
     setup.cmd
 
