@@ -20,9 +20,6 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "TpmSupport.h"
 
 
-// #include "iothub_client.h"
-// #include "iothub_message.h"
-// #include "iothub_client_version.h"
 #include "azure_c_shared_utility/threadapi.h"
 #include "azure_c_shared_utility/tickcounter.h"
 #include "azure_c_shared_utility/crt_abstractions.h"
@@ -32,11 +29,8 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "azure_c_shared_utility/http_proxy_io.h"
 #include "azure_c_shared_utility/xlogging.h"
 
-// #include "iothub_client_ll.h"
 #include "azure_prov_client/prov_device_ll_client.h"
 #include "azure_prov_client/prov_security_factory.h"
-
-// #include "iothubtransportmqtt.h"
 #include "azure_prov_client/prov_transport_http_client.h"
 
 // 
@@ -102,7 +96,6 @@ typedef struct CLIENT_SAMPLE_INFO_TAG
 
 CLIENT_SAMPLE_INFO dps_info;
 
-// DEFINE_ENUM_STRINGS(DPS_ERROR, DPS_ERROR_VALUES);
 DEFINE_ENUM_STRINGS(PROV_DEVICE_RESULT, PROV_DEVICE_RESULT_VALUE);
 DEFINE_ENUM_STRINGS(PROV_DEVICE_REG_STATUS, PROV_DEVICE_REG_STATUS_VALUES);
 
@@ -240,8 +233,6 @@ void DoDpsWork()
         {
             TRACE("Failed calling platform_init");
         }
-
-        
 
         ResetDps();
 
