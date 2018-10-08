@@ -94,6 +94,18 @@ Using one of the following options, register the device in IoTHub using the DPS 
 
 * Option 3: Use the [Device Management(DM) hello world application](<https://github.com/ms-iot/iot-core-azure-dm-client/blob/master/docs/dm-hello-world-overview.md>) for managing the device.
 
+## Troubleshooting
+
+If configuring the TPM is not successful for QCDB410C (Dragonboard), try following these steps to reset the TPM:
+
+1. Unplug the board
+1. Hold down the (|) and (+) button and power the board
+1. Move the cursor with (-) and (+) to select "15. UEFI Menu" and confirm with (|)
+1. Move the cursor with (-) and (+) to select "5. Clear UEFI BS Variables" and confirm with (|)
+1. Move the cursor with (-) and (+) to select "6. Clear UEFI RT Variables and fTPM (Erase RPMB)" and confirm with (|)
+1. Unplug the board
+ 
+
 ##########################################################################
 
 ## Setting up remote PowerShell connection
